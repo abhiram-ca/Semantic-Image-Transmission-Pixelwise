@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+env/
+.venv
+
+
+
+# Data
+data/
+*.npy
+*.npy.bak
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Outputs
+test_outputs/
+semantic_transmission_results/
+
+# Jupyter
+.ipynb_checkpoints/
+encoder.pth
+generator.pth
+# Cache
+.cache/
+*.log
