@@ -60,6 +60,17 @@ This repository includes pre-trained encoder and generator weights:
 - `encoder.pth` — Pre-trained encoder (semantic compression)
 - `generator.pth` — Pre-trained generator (image reconstruction)
 
+## Pre-trained Weights
+
+Download from [GitHub Releases](https://github.com/YOUR-USERNAME/Semantic-Image-Transmission/releases):
+
+1. Download `encoder.pth` and `generator.pth` from latest release
+2. Place in project root
+3. Run inference:
+```powershell
+python test_samples.py --images .\test_inputs\image1.jpg
+```
+
 **These weights are automatically used for:**
 - Inference (`test_samples.py`)
 - Semantic communication tests (`semantic_comm_network.py`)
