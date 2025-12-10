@@ -1,6 +1,6 @@
 # Semantic Image Transmission
 
-A deep learning system for efficient image transmission using semantic communication. The encoder compresses images into a compact semantic latent representation, which is transmitted over a noisy channel, and reconstructed at the receiver using a generator network.
+A deep learning system for efficient image transmission using semantic communication. The encoder compresses images into a compact semantic latent representation, which is transmitted over a noisy channel, and reconstructed at the receiver using a generator network. There is also an interactive GUI available.
 
 ## Overview
 
@@ -21,11 +21,14 @@ A deep learning system for efficient image transmission using semantic communica
 - ✅ Compute PSNR, SSIM, Cosine Similarity metrics
 - ✅ Visualize transmitted semantic maps and reconstructions
 - ✅ Save comparison images with metrics overlay
+- ✅ Web-based interactive frontend for real-time testing
+- ✅ Flask backend API for image processing
 
 ## Installation
 
 ### Requirements
 - Python 3.8+
+- Node.js 16+ (for frontend)
 - CUDA 11.8+ (optional, CPU supported)
 - 8+ GB RAM
 
@@ -34,7 +37,7 @@ A deep learning system for efficient image transmission using semantic communica
 1. **Clone repository:**
 ```bash
 cd c:\Users\DELL\Desktop
-git clone <repo-url>
+git clone https://github.com/abhiram-ca/Semantic-Image-Transmission-Pixelwise.git
 cd "Semantic Image Transmission"
 ```
 
@@ -50,7 +53,7 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-4. **Download VOC2012 dataset (if not already downloaded):**
+4. **Download VOC2012 dataset (if not already downloaded and if you want to train the model from scratch):**
    - Visit: http://host.robots.ox.ac.uk/pascal/VOC/voc2012/VOCtrainval_11-May-2012.tar
    - Extract to: `./data/VOCdevkit/VOC2012/`
 
@@ -62,7 +65,7 @@ This repository includes pre-trained encoder and generator weights:
 
 ## Pre-trained Weights
 
-Download from [GitHub Releases](https://github.com/YOUR-USERNAME/Semantic-Image-Transmission/releases):
+Download from [GitHub Releases](https://github.com/abhiram-ca/Semantic-Image-Transmission-Pixelwise/releases/tag/v1.0.0):
 
 1. Download `encoder.pth` and `generator.pth` from latest release
 2. Place in project root
@@ -100,20 +103,136 @@ New weights will be generated and saved as `encoder.pth` and `generator.pth`.
 ```
 Semantic Image Transmission/
 ├── train.py                          # Training script
-├── test_inputs                # Single-image inference
+├── test_inputs/                      # Test images
 ├── semantic_comm_network.py          # Full communication pipeline
 ├── spade_models.py                   # Encoder & Generator architectures
+├── app.py                            # Flask backend API
 ├── requirements.txt                  # Python dependencies
 ├── README.md                         # This file
 ├── .gitignore                        # Git ignore rules
-├── data/                             # VOC dataset (not committed)
-│   └── VOCdevkit/VOC2012/
-│       ├── JPEGImages/               # Training images
-│       └── SegmentationClass/        # Segmentation masks
+├── semantic-comm-frontend/           # React frontend
+│   ├── src/
+│   │   ├── App.jsx                   # Main React component
+│   │   ├── App.css                   # Styling
+│   │   └── main.jsx                  # Entry point
+│   ├── package.json                  # Node dependencies
+│   └── vite.config.js                # Vite configuration
 ├── encoder.pth                       # Trained encoder weights
 ├── generator.pth                     # Trained generator weights
 └── semantic_transmission_results/    # Test outputs
     └── ...
+```
+
+## Web Application Setup
+
+### Backend Setup (Flask API)
+
+1. **Ensure virtual environment is activated:**
+```powershell
+.\venv\Scripts\Activate.ps1
+```
+
+2. **Install backend dependencies (if not already installed):**
+```powershell
+pip install flask flask-cors pillow numpy torch torchvision
+```
+
+3. **Start the Flask backend:**
+```powershell
+python app.py
+```
+
+The backend will start on `http://localhost:5000`
+
+**Backend API Endpoints:**
+- `GET /api/health` — Check backend status and model loading
+- `POST /api/process` — Process image with specified SNR
+
+**Expected Response:**
+```
+* Running on http://localhost:5000
+Model loaded successfully!
+```
+
+### Frontend Setup (React + Vite)
+
+1. **Navigate to frontend directory:**
+```powershell
+cd semantic-comm-frontend
+```
+
+2. **Install Node.js dependencies:**
+```powershell
+npm install
+```
+
+3. **Install additional packages (if needed):**
+```powershell
+npm install lucide-react
+```
+
+4. **Start the development server:**
+```powershell
+npm run dev
+```
+
+The frontend will start on `http://localhost:5173`
+
+5. **Open in browser:**
+```
+http://localhost:5173
+```
+
+### Using the Web Interface
+
+1. **Check Connection Status:**
+   - Green "Connected" badge = Backend running correctly
+   - Red "Disconnected" badge = Backend not running (start `app.py`)
+
+2. **Upload Image:**
+   - Click "Choose Image" button
+   - Select any image file (JPG, PNG, etc.)
+
+3. **Adjust SNR:**
+   - Use slider to set Signal-to-Noise Ratio (-5 dB to 30 dB)
+   - Lower SNR = more noise, higher SNR = less noise
+
+4. **Process:**
+   - Click "Transmit & Reconstruct" button
+   - Wait for processing (usually 2-5 seconds)
+
+5. **View Results:**
+   - Original image
+   - Semantic map (extracted features)
+   - Reconstructed image after channel transmission
+   - Quality metrics (PSNR, SSIM, Cosine Similarity)
+
+### Troubleshooting Web App
+
+**Backend not connecting:**
+```powershell
+# Check if backend is running
+# Should see: "Running on http://localhost:5000"
+python app.py
+```
+
+**Frontend shows blank page:**
+```powershell
+# In semantic-comm-frontend directory
+npm run dev
+```
+
+**CORS errors in browser console:**
+- Ensure `flask-cors` is installed: `pip install flask-cors`
+- Check that backend includes CORS headers (already configured in `app.py`)
+
+**Port already in use:**
+```powershell
+# Backend (port 5000)
+# Kill process using port 5000, then restart
+
+# Frontend (port 5173)
+# Vite will automatically use next available port
 ```
 
 ## Usage
@@ -185,6 +304,21 @@ semantic_transmission_results/
 ├── image1_cmp_snr_-5_dB.png
 └── image1_metrics.txt            # SNR-wise PSNR/SSIM/CosSim table
 ```
+
+### 4. Web Interface (Interactive)
+
+Most user-friendly method for testing:
+
+```powershell
+# Terminal 1: Start backend
+python app.py
+
+# Terminal 2: Start frontend
+cd semantic-comm-frontend
+npm run dev
+```
+
+Then open `http://localhost:5173` in your browser.
 
 ## Metrics
 
@@ -288,28 +422,37 @@ import torch
 print(torch.cuda.is_available())  # Should print True
 ```
 
-## Citation
+### Backend API errors
+```powershell
+# Ensure all dependencies are installed
+pip install flask flask-cors pillow numpy torch torchvision
 
-If you use this code in research, please cite:
-
-```bibtex
-@project{semantic_image_transmission,
-  title={Semantic Image Transmission},
-  year={2025}
-}
+# Check if encoder.pth and generator.pth exist in project root
+dir *.pth
 ```
+
+### Frontend build errors
+```powershell
+# In semantic-comm-frontend directory
+rm -r node_modules
+rm package-lock.json
+npm install
+npm run dev
+```
+
 
 ## License
 
 MIT License — See LICENSE file for details
 
-## Author
+## Authors
 
 Abhiram C A
 
 Deven Lunkad
 
 Prakruti Shetti
+
 
 ## References
 
