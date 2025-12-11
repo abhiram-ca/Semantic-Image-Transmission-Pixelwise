@@ -17,7 +17,7 @@ A deep learning system for efficient image transmission using semantic communica
 ## Features
 
 - ✅ Train encoder-generator on VOC segmentation dataset
-- ✅ Test over multiple SNR levels (20 dB to -5 dB)
+- ✅ Test over multiple SNR levels (100 dB to -5 dB)
 - ✅ Compute PSNR, SSIM, Cosine Similarity metrics
 - ✅ Visualize transmitted semantic maps and reconstructions
 - ✅ Save comparison images with metrics overlay
